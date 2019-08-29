@@ -13,9 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 from maxfw.core import MAXApp
 from api import ModelMetadataAPI, ModelPredictAPI
 from config import API_TITLE, API_DESC, API_VERSION
+
+os.environ['CORS_ENABLE']='true'
+os.environ['WERKZEUG_RUN_MAIN']='true'
 
 max_app = MAXApp(API_TITLE, API_DESC, API_VERSION)
 max_app.add_api(ModelMetadataAPI, '/metadata')

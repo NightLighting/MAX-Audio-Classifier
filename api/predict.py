@@ -19,6 +19,7 @@ from flask_restplus import fields
 from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest
 from maxfw.core import MAX_API, PredictAPI
+from util import audio_slice
 
 
 # set up parser for audio input data
@@ -63,7 +64,7 @@ class ModelPredictAPI(PredictAPI):
 
         # Getting the predictions
         try:
-            preds = self.model_wrapper._predict(audio_data, args['start_time'])
+            preds = self.model_wrapper._predict(audio_slice.slice(audio_data, 10), args['start_time'])
         except ValueError:
             e = BadRequest()
             e.data = {'status': 'error', 'message': 'Invalid start time: value outside audio clip'}
