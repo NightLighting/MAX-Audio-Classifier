@@ -60,7 +60,7 @@ class ModelPredictAPI(PredictAPI):
             e.data = {'status': 'error', 'message': 'Invalid file type/extension: ' + str(args['audio'].mimetype)}
             raise e
 
-        audio_data = args['audio'].read()
+        audio_data = args['audio']
 
         # Getting the predictions
         try:
