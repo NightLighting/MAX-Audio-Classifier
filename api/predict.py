@@ -19,7 +19,7 @@ from flask_restplus import fields
 from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest
 from maxfw.core import MAX_API, PredictAPI
-from util import audio_slice
+# from util import audio_slice
 
 
 # set up parser for audio input data
@@ -60,19 +60,20 @@ class ModelPredictAPI(PredictAPI):
             e.data = {'status': 'error', 'message': 'Invalid file type/extension: ' + str(args['audio'].mimetype)}
             raise e
 
-        audio_data = args['audio']
-        sliced_audio = audio_slice.slice(audio_data, 10)
+        audio_data = args['audio'].read()
+        # sliced_audio = audio_slice.slice(audio_data, 10)
 
         # Getting the predictions
         try:
-            preds = self.model_wrapper._predict(sliced_audio, args['start_time'])
+            preds = self.model_wrapper._predict(audio_data, args['start_time'])
         except ValueError:
             e = BadRequest()
             e.data = {'status': 'error', 'message': 'Invalid start time: value outside audio clip'}
             raise e
 
         # Aligning the predictions to the required API format
-        label_preds = [{'label_id': p[0], 'label': p[1], 'probability': p[2]} for p in preds]
+        # label_preds = [{'label_id': p[0], 'label': p[1], 'probability': p[2]} for p in preds]
+        label_preds = [{'label_id': p[0], 'probability': p[2]} for p in preds]
 
         # Filter list
         if args['filter'] is not None and any(x.strip() != '' for x in args['filter']):
